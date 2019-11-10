@@ -126,4 +126,4 @@ if __name__ == '__main__':
         filename = download_and_process_story(story)
         tweet_media(filename)
         save_last_tweeted_story_time(story)
-    delete_old_tweets()
+    # delete_old_tweets()

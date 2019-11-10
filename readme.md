@@ -2,6 +2,8 @@
 
 Python script to tweet your latest instagram stories
 
+example: https://twitter.com/plhery_stories
+
 ### Get started
 
 - Create a Twitter app with write access on https://app.twitter.com
@@ -16,8 +18,13 @@ This will show you a link to log into twitter and generate api credentials
 - Run `python3 tweet-insta-stories` to tweet your latest stories
 - Set a crontab to run this every 10 minutes
 
+Note: to delete your tweets after 5 days, uncomment the last line (warning: this will delete ALL you 5days+ tweets, not only your stories)
 ### TODO
 
 - Run this in a serverless (e.g lambda) environment (ffmpeg may be a problem)
 - Use a real DB
 - Improve video upload behaviour
+
+##Licence
+
+TweetInstaStories was released under [Apache License 2.0](LICENSE)
