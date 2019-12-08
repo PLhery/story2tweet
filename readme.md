@@ -9,7 +9,7 @@ example: https://twitter.com/plhery_stories
 - Create a Twitter app with write access on https://app.twitter.com
 - Install python3 & ffmpeg
 - Install instagram_private_api and spyder-exe's tweepy fork
-`pip3 install instagram_private_api git+https://github.com/Spyder-exe/tweepy.git`
+`pip install -r requirements.txt`
 - Run `python3 generate-instagram-cookie-jar -u your-username -p your-password`
 This will auth you to instagram and store your cookies, which will work for 90 days
 - Run `python3 generate-twitter-consumer-key -k your-app-key -p your-app-secret`

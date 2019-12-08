@@ -26,6 +26,8 @@ def fetch_user_stories():
     return insta_api.user_story_feed(INSTA_ID)
 
 def parse_stories_feed(user_feed_info):
+    if user_feed_info['reel'] is None: return []
+
     Story = namedtuple('Story', ['type', 'taken_at', 'media_url', 'audio_url'])
 
     media_urls = []
@@ -59,15 +61,15 @@ def download_and_process_story(story):
         _, audio_extension = os.path.splitext(urlparse(story.audio_url).path)
         audioname = absPath('tmp/audio' + audio_extension)
         urllib.request.urlretrieve(story.audio_url, audioname)
+    else:
+        audioname = filename
 
-        newfilename = absPath('tmp/processed' + file_extension)
-        cmd = ['ffmpeg', '-loglevel', 'fatal', '-y', '-i', filename, '-i', audioname, '-c:v', 'copy', '-c:a', 'copy', newfilename]
-        exit_code = subprocess.call(cmd, stdout=None, stderr=subprocess.STDOUT)
-        if exit_code != 0:
-            print("[W] FFmpeg exit code not '0' but '{:d}'.".format(exit_code))
-        return newfilename
-
-    return filename
+    newfilename = absPath('tmp/processed' + file_extension)
+    cmd = ['ffmpeg', '-loglevel', 'fatal', '-y', '-i', filename, '-i', audioname, '-c:v', 'copy', '-c:a', 'copy', newfilename]
+    exit_code = subprocess.call(cmd, stdout=None, stderr=subprocess.STDOUT)
+    if exit_code != 0:
+        print("[W] FFmpeg exit code not '0' but '{:d}'.".format(exit_code))
+    return newfilename
 
 def getTwapi():
     with open(absPath('settings/twitter_tokens.txt')) as file_data:
@@ -83,7 +85,7 @@ def tweet_media(filepath):
         upload_result = twapi.media_upload(filename=filepath)
         if hasattr(upload_result, 'processing_info') and upload_result.processing_info['state'] == 'pending':
             print('media state pending - will wait 10 seconds')
-            time.sleep(10) # hacky but tweepy doesn't provide the media status endpoint
+            time.sleep(15) # hacky but tweepy doesn't provide the media status endpoint
         print('sending the tweet...')
         twapi.update_status(media_ids=[upload_result.media_id_string])
     except tweepy.error.TweepError as err:
@@ -126,4 +128,5 @@ if __name__ == '__main__':
         filename = download_and_process_story(story)
         tweet_media(filename)
         save_last_tweeted_story_time(story)
+        break
     # delete_old_tweets()
