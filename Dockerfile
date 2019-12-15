@@ -1,17 +1,14 @@
 FROM python:3.6
 
-RUN apt update && apt install -y ffmpeg cron
+RUN apt update && apt install -y ffmpeg
 
-WORKDIR git
+RUN mkdir /app /app/settings /app/tmp
+WORKDIR /app
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN touch /var/log/cron.log
-COPY crontab /tmp/crontab
-RUN crontab /tmp/crontab && rm /tmp/crontab
+COPY ./*.py ./
 
-COPY tweet-insta-stories.py ./
-COPY settings ./settings
-
-CMD cron && tail -f /var/log/cron.log
+ENTRYPOINT [ "python" ]
+CMD [ "./tweet-insta-stories.py" ]
